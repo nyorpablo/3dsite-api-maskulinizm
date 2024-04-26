@@ -193,6 +193,10 @@ class ParserController extends Controller
             'unit' => 'required',
             'scale' => 'required',
             'cost_per_cc' => 'required',
+            'printing_technology' => 'required',
+            'material' => 'required',
+            'quality' => 'required',
+            'quantity' => 'required',
         ]);
 
         $file_path = $validatedData['stl_file'];
@@ -202,6 +206,69 @@ class ParserController extends Controller
         $layer_height_mm = 0.2; // Layer height in millimeters
         $printer_speed_mm_per_s = 90; // Printer speed in millimeters per second
         $cost_per_cc = $cost_per_cc ? $cost_per_cc : 0.05;
+        $printing_technology = $validatedData['printing_technology'];
+        $material = $validatedData['material'];
+        $quality = $validatedData['quality'];
+        $quantity = $validatedData['quantity'];
+
+        if($printing_technology === 'als'){
+            $printing_technology = 1;
+        }elseif($printing_technology === 'fdm'){
+            $printing_technology = 2;
+        }else{
+            $printing_technology = 0;
+        }
+
+        switch ($printing_technology) {
+            case 'als':
+                $printing_technology = 1;
+                break;
+            case 'fdm':
+                $printing_technology = 2;
+                break;
+            default:
+                $quality = 0;
+        }
+
+        switch ($material) {
+            case 'resin_standard':
+                $material = 2;
+                break;
+            case 'rubber_flexible':
+                $material = 2;
+                break;
+            case 'petg':
+                $material = 3;
+                break;
+            case 'pla':
+                $material = 4;
+                break;
+            case 'rubber_regid':
+                $material = 5;
+                break;
+            case 'nylon':
+                $material = 6;
+                break;
+            case 'abs':
+                $material = 7;
+                break;
+            default:
+                $material = 0;
+        }
+
+        switch ($quality) {
+            case 'fast':
+                $quality = 1;
+                break;
+            case 'mean':
+                $quality = 2;
+                break;
+            case 'high':
+                $quality = 3;
+                break;
+            default:
+                $quality = 0;
+        }
 
         if($unit == 'inch'){
             $converted_scale = $scale / 200;
@@ -221,7 +288,7 @@ class ParserController extends Controller
         $parsed_data = $this->parse_stl_file($file_path, $unit, $scale);
         $total_volume = $this->calculate_stl_volume($parsed_data, $unit, $scale, $layer_height_mm, $printer_speed_mm_per_s);
         $printing_time_hours = $this->calculate_printing_time($parsed_data, $layer_height_mm, $printer_speed_mm_per_s);
-        $production_cost = $total_volume * $concluder_price;
+        $production_cost = (($total_volume * $concluder_price) * $quantity) + $material + $printing_technology;
 
         if ($printing_time_hours <= 0.9) {
             // If printing time is less than or equal to 0.9 hours, convert to minutes
