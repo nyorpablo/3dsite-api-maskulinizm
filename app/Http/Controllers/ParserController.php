@@ -211,14 +211,6 @@ class ParserController extends Controller
         $quality = $validatedData['quality'];
         $quantity = $validatedData['quantity'];
 
-        if($printing_technology === 'als'){
-            $printing_technology = 1;
-        }elseif($printing_technology === 'fdm'){
-            $printing_technology = 2;
-        }else{
-            $printing_technology = 0;
-        }
-
         switch ($printing_technology) {
             case 'als':
                 $printing_technology = 1;
