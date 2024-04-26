@@ -17,7 +17,7 @@ class UserApiTokenSeeder extends Seeder
         $users = [
             [
                 'user_id' => 1,
-                'user_api_key' => 'testkey',
+                'user_api_key' => 'demo_default_key',
             ]
         ];
 
