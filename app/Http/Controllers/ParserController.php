@@ -211,60 +211,6 @@ class ParserController extends Controller
         $quality = $validatedData['quality'];
         $quantity = $validatedData['quantity'];
 
-        switch ($printing_technology) {
-            case 'als':
-                $printing_technology = 1;
-                break;
-            case 'fdm':
-                $printing_technology = 2;
-                break;
-            default:
-                $printing_technology = 0;
-                break;
-        }
-
-        switch ($material) {
-            case 'resin_standard':
-                $material = 2;
-                break;
-            case 'rubber_flexible':
-                $material = 2;
-                break;
-            case 'petg':
-                $material = 3;
-                break;
-            case 'pla':
-                $material = 4;
-                break;
-            case 'rubber_regid':
-                $material = 5;
-                break;
-            case 'nylon':
-                $material = 6;
-                break;
-            case 'abs':
-                $material = 7;
-                break;
-            default:
-                $material = 0;
-                break;
-        }
-
-        switch ($quality) {
-            case 'fast':
-                $quality = 1;
-                break;
-            case 'mean':
-                $quality = 2;
-                break;
-            case 'high':
-                $quality = 3;
-                break;
-            default:
-                $quality = 0;
-                break;
-        }
-
         if($unit == 'inch'){
             $converted_scale = $scale / 200;
         }else{
