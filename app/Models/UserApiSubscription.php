@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserApiSubscription extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -16,12 +17,16 @@ class UserApiSubscription extends Model
      */
     protected $fillable = [
         'user_id',
-        'subscription_type',
-        'usage',
+        'subscription_tier',
     ];
 
     public function subscription()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function user_tier()
+    {
+        return $this->belongsTo(SubscriptionTier::class, 'subscription_tier');
     }
 }

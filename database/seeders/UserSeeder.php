@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
             [
                 'name' => 'Paul Christian De Guzman',
                 'email' => 'paul@test.com',
-                'password' => bcrypt('@dm1n18tR@t0r$')
+                'password' => bcrypt('password')
             ]
         ];
 
