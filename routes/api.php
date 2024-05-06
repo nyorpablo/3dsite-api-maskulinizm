@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ParserController;
+use App\Http\Controllers\Api\ParserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +18,6 @@ use App\Http\Controllers\ParserController;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['prefix' => 'parser'], function () {
-        Route::post('stl-parser/{api_key}', [ParserController::class, 'stl_parser']);
+        Route::post('stl-parser', [ParserController::class, 'stl_parser']);
     });
 });

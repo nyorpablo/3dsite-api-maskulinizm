@@ -1,0 +1,39 @@
+# fly.toml app configuration file generated for 3dsite-api-maskulinizm on 2024-05-06T11:52:57+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = '3dsite-api-maskulinizm'
+primary_region = 'sin'
+console_command = 'php /var/www/html/artisan tinker'
+
+[build]
+  [build.args]
+    NODE_VERSION = '18'
+    PHP_VERSION = '8.2'
+
+[env]
+  APP_NAME="3D Parser Site"
+  APP_ENV='production'
+  APP_KEY='base64:IKSbZXDLlAXnibphVBSq+wY38b5qBX44BRK+gpL/83E='
+  APP_DEBUG='true'
+  APP_TIMEZONE='UTC'
+  APP_URL='https://3dsite-api-maskulinizm.fly.dev/'
+  LOG_CHANNEL='discord'
+  LOG_STACK='single'
+  LOG_DEPRECATIONS_CHANNEL='null'
+  LOG_LEVEL='debug'
+  LOG_DISCORD_WEBHOOK_URL='https://discord.com/api/webhooks/1236676201796472912/uQUhorGy68W3GYPaV3Z61ZSUPac3393heNIQOKPblGH06GiVQ1Nz-C9KcPEZZpuA6xXo'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

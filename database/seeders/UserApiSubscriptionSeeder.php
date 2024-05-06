@@ -14,15 +14,14 @@ class UserApiSubscriptionSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = [
+        $user_sub = [
             [
                 'user_id' => 1,
-                'subscription_type' => 3,
-                'usage' => 100,
+                'subscription_tier' => 3,
             ]
         ];
 
-        foreach ($users as $value) {
+        foreach ($user_sub as $value) {
             UserApiSubscription::create($value);
         }
     }

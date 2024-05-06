@@ -14,14 +14,16 @@ class UserApiTokenSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = [
+        $tokens = [
             [
                 'user_id' => 1,
-                'user_api_key' => 'demo_default_key',
+                'api_key' => '3DKEY-902345',
+                'usage' => '100',
+                'host_connection' => '["https://maskulinizm.com/3dsite"]',
             ]
         ];
 
-        foreach ($users as $value) {
+        foreach ($tokens as $value) {
             UserApiToken::create($value);
         }
     }
