@@ -9,7 +9,7 @@ new class extends Component {
     public $stl_name;
 
     public function mount(Request $request){
-        $this->file_path = env('APP_URL');
+        $this->file_path = env('APP_URL').'/';
         $this->file_name = $request->stl_name;
     }
 }
