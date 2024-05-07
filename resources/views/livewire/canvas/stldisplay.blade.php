@@ -35,7 +35,7 @@ new class extends Component {
         var light = new BABYLON.DirectionalLight("light", new BABYLON.Vector3(0, 1, 5), scene);
 
         // Load the STL file asynchronously
-        BABYLON.SceneLoader.ImportMesh("", "{{ $file_path }}", "{{ $file_name }}", scene, function (meshes) {
+        BABYLON.SceneLoader.ImportMesh("", "{{ asset($file_path) }}", "{{ $file_name }}", scene, function (meshes) {
             // Do something with the loaded meshes if needed
             var mesh = meshes[0]; // Assuming only one mesh is loaded
             mesh.rotationQuaternion = null; // Disable auto-rotation
