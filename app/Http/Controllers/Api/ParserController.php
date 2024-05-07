@@ -245,7 +245,7 @@ class ParserController extends Controller
             $fileContent = file_get_contents($file_path);
             $originalFilename = basename(parse_url($file_path, PHP_URL_PATH));
             $uniqueFilename = uniqid('odysse_3d_'.pathinfo($originalFilename, PATHINFO_FILENAME) . '_') . '.' . pathinfo($originalFilename, PATHINFO_EXTENSION);
-            $log = Storage::put('public/stl/' . $uniqueFilename, $fileContent);
+            Storage::put('public/stl/' . $uniqueFilename, $fileContent);
             $storedFileUrl = Storage::url('public/stl/' . $uniqueFilename);
             Log::info('Successfully added file: ' . $storedFileUrl);
         } catch (\Throwable $th) {
