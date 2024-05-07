@@ -12,6 +12,7 @@ use App\Models\UserApiQueries;
 
 use Spatie\Referer\Referer;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ParserController extends Controller
 {
@@ -240,10 +241,14 @@ class ParserController extends Controller
         $quantity = $validatedData['quantity'];
         $infill = $validatedData['infill'];
 
-        $fileContent = file_get_contents($file_path);
-        $originalFilename = basename(parse_url($file_path, PHP_URL_PATH));
-        $uniqueFilename = uniqid('odysse_3d_'.pathinfo($originalFilename, PATHINFO_FILENAME) . '_') . '.' . pathinfo($originalFilename, PATHINFO_EXTENSION);
-        Storage::put('public/stl/' . $uniqueFilename, $fileContent);
+        try {
+            $fileContent = file_get_contents($file_path);
+            $originalFilename = basename(parse_url($file_path, PHP_URL_PATH));
+            $uniqueFilename = uniqid('odysse_3d_'.pathinfo($originalFilename, PATHINFO_FILENAME) . '_') . '.' . pathinfo($originalFilename, PATHINFO_EXTENSION);
+            Storage::put('public/stl/' . $uniqueFilename, $fileContent);
+        } catch (\Throwable $th) {
+            Log::error('Failed to add file: ' . $th->getMessage());
+        }
 
         UserApiQueries::create([
             'user_id' => $getToken[0]->user->id,
