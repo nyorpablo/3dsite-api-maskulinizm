@@ -241,17 +241,6 @@ class ParserController extends Controller
         $quantity = $validatedData['quantity'];
         $infill = $validatedData['infill'];
 
-        try {
-            $fileContent = file_get_contents($file_path);
-            $originalFilename = basename(parse_url($file_path, PHP_URL_PATH));
-            $uniqueFilename = uniqid('odysse_3d_'.pathinfo($originalFilename, PATHINFO_FILENAME) . '_') . '.' . pathinfo($originalFilename, PATHINFO_EXTENSION);
-            Storage::put('public/stl/' . $uniqueFilename, $fileContent);
-            $storedFileUrl = Storage::url('public/stl/' . $uniqueFilename);
-            Log::info('Successfully added file: ' . $storedFileUrl);
-        } catch (\Throwable $th) {
-            Log::error('Failed to add file to storage: ' . $th->getMessage());
-        }
-
         UserApiQueries::create([
             'user_id' => $getToken[0]->user->id,
             'host' => $request->userAgent(),
@@ -294,8 +283,7 @@ class ParserController extends Controller
                 number_format($this->calculate_total_grams($parsed_data), 2),
                 $printing_time_output
             ],
-            'parsed_data' => $parsed_data,
-            '3d_file_name' => $uniqueFilename
+            // 'parsed_data' => $parsed_data,
         ];
 
         UserApiToken::where('id',$getToken[0]->id)->update([
