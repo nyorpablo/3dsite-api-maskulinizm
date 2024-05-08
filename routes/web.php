@@ -13,9 +13,6 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::view('viewer/{stl_name}', 'stl/viewer')
-    ->name('viewer');
-
 Route::view('subscription', 'dashboard/subscription')
     ->middleware(['auth', 'verified'])
     ->name('subscription');
