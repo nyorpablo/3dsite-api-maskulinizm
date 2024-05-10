@@ -277,13 +277,88 @@ class ParserController extends Controller
             $printing_time_output = round($printing_time_hours) . ' hours';
         }
 
+        $material_volume = $total_volume * ($infill / 100);
+        $support_material_percentage = 0.008;
+        $support_material_volume = $total_volume * ($support_material_percentage / 100);
+
+        // Check if vertices array is not empty
+        if (!empty($parsed_data['vertices'])) {
+            // Extract x, y, and z coordinates into separate arrays
+            $x_coordinates = array_column($parsed_data['vertices'], 1);
+            $y_coordinates = array_column($parsed_data['vertices'], 2);
+            $z_coordinates = array_column($parsed_data['vertices'], 3);
+
+            // Calculate min and max coordinates for each dimension
+            $min_x = min($x_coordinates);
+            $max_x = max($x_coordinates);
+            $min_y = min($y_coordinates);
+            $max_y = max($y_coordinates);
+            $min_z = min($z_coordinates);
+            $max_z = max($z_coordinates);
+
+            // Calculate box dimensions
+            $box_length = $max_x - $min_x;
+            $box_width = $max_y - $min_y;
+            $box_height = $max_z - $min_z;
+
+            // Calculate box volume
+            $box_volume_mm3 = $box_length * $box_width * $box_height;
+            // Convert box volume to cubic centimeters and round to two decimal places
+            $box_volume = round($box_volume_mm3 / 1000, 2); // Convert from mm³ to cm³ and round to two decimal places
+        } else {
+            // Set box volume to 0 if no vertices are found
+            $box_volume = 0;
+        }
+
+        $total_surface_area = 0;
+
+        foreach ($parsed_data['faces'] as $faceVertices) {
+            // Get vertices of the face
+            $v0 = $parsed_data['vertices'][$faceVertices[0]];
+            $v1 = $parsed_data['vertices'][$faceVertices[1]];
+            $v2 = $parsed_data['vertices'][$faceVertices[2]];
+
+            // Calculate surface area of the triangle formed by the face vertices
+            $surface_area = $this->calculate_triangle_surface_area($v0, $v1, $v2);
+
+            // Add the surface area of the triangle to the total surface area
+            $total_surface_area += $surface_area;
+        }
+
+        $surface_area_cm2 = round($total_surface_area / 100, 2); 
+
+        // Calculate the dimensions of the bounding box
+        $min_x = min(array_column($parsed_data['vertices'], 1));
+        $max_x = max(array_column($parsed_data['vertices'], 1));
+        $min_y = min(array_column($parsed_data['vertices'], 2));
+        $max_y = max(array_column($parsed_data['vertices'], 2));
+        $min_z = min(array_column($parsed_data['vertices'], 3));
+        $max_z = max(array_column($parsed_data['vertices'], 3));
+
+        // Calculate model dimensions
+        $model_length = $max_x - $min_x;
+        $model_width = $max_y - $min_y;
+        $model_height = $max_z - $min_z;
+
+        // Format model dimensions with two decimal places
+        $formatted_model_length = round($model_length / 10, 2);
+        $formatted_model_width = round($model_width / 10, 2);
+        $formatted_model_height = round($model_height / 10, 2);
+
+        $total_polygons = count($parsed_data['faces']);
+
         $data = [
             'formated_data' => [
-                '$'.number_format($production_cost, 2),
-                number_format($this->calculate_total_grams($parsed_data), 2),
-                $printing_time_output
+                'price' => '$'.number_format($production_cost, 2),
+                'total_grams' => number_format($this->calculate_total_grams($parsed_data), 2),
+                'material_volume' => number_format($material_volume, 2).' cm³',
+                'support_material' => number_format($support_material_volume, 2) . ' cm³',
+                'box_volume' => number_format($box_volume, 2) . ' cm³',
+                'total_surface_area' => number_format($surface_area_cm2, 2) . ' square cm',
+                'model_dimensions' => $formatted_model_length . ' cm x ' . $formatted_model_width . ' cm x ' . $formatted_model_height . ' cm',
+                'number_of_polygons' => $total_polygons,
+                'print_time' => $printing_time_output
             ],
-            // 'parsed_data' => $parsed_data,
         ];
 
         UserApiToken::where('id',$getToken[0]->id)->update([
@@ -295,5 +370,21 @@ class ParserController extends Controller
             'data'=>$data,
             'message'=>'Data Retrieved'
         ], 200);
+    }
+
+    // Define a function to calculate the surface area of a triangle given its vertices
+    function calculate_triangle_surface_area($v0, $v1, $v2) {
+        // Calculate the lengths of the sides of the triangle
+        $a = sqrt(pow($v1[1] - $v0[1], 2) + pow($v1[2] - $v0[2], 2) + pow($v1[3] - $v0[3], 2));
+        $b = sqrt(pow($v2[1] - $v1[1], 2) + pow($v2[2] - $v1[2], 2) + pow($v2[3] - $v1[3], 2));
+        $c = sqrt(pow($v0[1] - $v2[1], 2) + pow($v0[2] - $v2[2], 2) + pow($v0[3] - $v2[3], 2));
+
+        // Calculate the semi-perimeter of the triangle
+        $s = ($a + $b + $c) / 2;
+
+        // Calculate the area of the triangle using Heron's formula
+        $area = sqrt($s * ($s - $a) * ($s - $b) * ($s - $c));
+
+        return $area;
     }
 }
