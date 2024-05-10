@@ -264,7 +264,7 @@ class ParserController extends Controller
         $parsed_data = $this->parse_stl_file($file_path, $unit, $scale);
         $total_volume = $this->calculate_stl_volume($parsed_data, $unit, $scale, $layer_height_mm, $printer_speed_mm_per_s);
         $printing_time_hours = $this->calculate_printing_time($parsed_data, $layer_height_mm, $printer_speed_mm_per_s);
-        $production_cost = ($total_volume * $concluder_price * $quantity) + $material + $printing_technology + $quality + $infill;
+        $production_cost = (($total_volume * $concluder_price) + $material + $printing_technology + $quality + $infill) * $quantity;
 
         if ($printing_time_hours <= 0.9) {
             // If printing time is less than or equal to 0.9 hours, convert to minutes
